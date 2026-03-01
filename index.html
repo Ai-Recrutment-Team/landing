@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talentic — AI-Powered Recruitment Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary: #6366f1;
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
+  --accent: #06b6d4;
+  --accent2: #8b5cf6;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --bg-dark: #0a0a1a;
+  --bg-card: rgba(255,255,255,0.04);
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --glass: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.1);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+
+/* ─── GLOBAL BACKGROUND ─── */
+.bg-grid {
+  position: fixed; inset: 0; z-index: -2;
+  background-image:
+    linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.bg-glow {
+  position: fixed; z-index: -1;
+  width: 600px; height: 600px; border-radius: 50%;
+  filter: blur(120px); opacity: 0.15; pointer-events: none;
+}
+.bg-glow-1 { top: -200px; left: -100px; background: var(--primary); }
+.bg-glow-2 { bottom: -200px; right: -100px; background: var(--accent); }
+.bg-glow-3 { top: 50%; left: 50%; transform: translate(-50%,-50%); background: var(--accent2); opacity: 0.08; }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 8px 40px;
+  background: rgba(10,10,26,0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex; align-items: center; justify-content: space-between;
+  transition: transform 0.3s;
+}
+nav.hidden { transform: translateY(-100%); }
+.nav-logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.3rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-light), var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.nav-links { display: flex; gap: 32px; }
+.nav-links a {
+  color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+  padding: 10px 24px; border-radius: 10px; border: none;
+  background: linear-gradient(135deg, var(--primary), var(--accent2));
+  color: #fff; font-weight: 600; font-size: 0.9rem; cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(99,102,241,0.3); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  padding: 120px 40px 80px;
+  position: relative;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 20px; border-radius: 50px;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  font-size: 0.85rem; color: var(--accent); font-weight: 500;
+  margin-bottom: 32px;
+  animation: fadeInUp 0.8s ease-out;
+}
+.hero-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
+.hero h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(3rem, 7vw, 5.5rem); font-weight: 800;
+  line-height: 1.05; margin-bottom: 24px;
+  animation: fadeInUp 0.8s ease-out 0.1s both;
+}
+.hero h1 .gradient {
+  background: linear-gradient(135deg, var(--primary-light), var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-size: 200% 200%; animation: gradientShift 4s ease infinite;
+}
+.hero p {
+  font-size: clamp(1.1rem, 2vw, 1.35rem); color: var(--text-muted);
+  max-width: 640px; line-height: 1.7; margin-bottom: 48px;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+.hero-buttons {
+  display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+  animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+.btn {
+  padding: 16px 36px; border-radius: 14px; border: none;
+  font-size: 1rem; font-weight: 600; cursor: pointer;
+  transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--accent2));
+  color: #fff; box-shadow: 0 4px 24px rgba(99,102,241,0.25);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(99,102,241,0.4); }
+.btn-ghost {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  color: var(--text);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+.hero-stats {
+  display: flex; gap: 48px; margin-top: 64px;
+  animation: fadeInUp 0.8s ease-out 0.5s both;
+}
+.hero-stat { text-align: center; }
+.hero-stat .number {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2.5rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-light), var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-stat .label { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+
+/* ─── SCROLL INDICATOR ─── */
+.scroll-indicator {
+  position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  animation: fadeInUp 0.8s ease-out 0.7s both;
+}
+.scroll-indicator span { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+.scroll-arrow { width: 20px; height: 20px; border-right: 2px solid var(--primary-light); border-bottom: 2px solid var(--primary-light); transform: rotate(45deg); animation: bounce 2s infinite; }
+
+/* ─── SECTIONS ─── */
+section { padding: 120px 40px; max-width: 1200px; margin: 0 auto; }
+.section-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 50px;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  font-size: 0.8rem; color: var(--accent); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px;
+}
+.section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem); font-weight: 700;
+  margin-bottom: 16px; line-height: 1.2;
+}
+.section-subtitle {
+  font-size: 1.1rem; color: var(--text-muted); max-width: 600px; line-height: 1.7;
+  margin-bottom: 64px;
+}
+
+/* ─── PROBLEM / SOLUTION ─── */
+.problem-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+  align-items: center;
+}
+.pain-points { display: flex; flex-direction: column; gap: 20px; }
+.pain-point {
+  display: flex; gap: 16px; padding: 20px;
+  border-radius: 16px; background: rgba(239,68,68,0.05);
+  border: 1px solid rgba(239,68,68,0.1);
+  transition: transform 0.3s;
+}
+.pain-point:hover { transform: translateX(8px); }
+.pain-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: rgba(239,68,68,0.1); color: #ef4444;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.pain-point h4 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+.pain-point p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+
+.solution-card {
+  padding: 40px; border-radius: 24px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(6,182,212,0.08));
+  border: 1px solid rgba(99,102,241,0.15);
+  position: relative; overflow: hidden;
+}
+.solution-card::before {
+  content: ''; position: absolute; top: -50%; right: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 60%);
+}
+.solution-card h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.8rem; font-weight: 700; margin-bottom: 16px;
+  position: relative;
+}
+.solution-card p { color: var(--text-muted); line-height: 1.7; position: relative; margin-bottom: 24px; }
+.solution-features { display: flex; flex-direction: column; gap: 12px; position: relative; }
+.solution-feature {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 0.95rem; font-weight: 500;
+}
+.check-icon {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: rgba(16,185,129,0.15); color: var(--success);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; flex-shrink: 0;
+}
+
+/* ─── HOW IT WORKS ─── */
+.steps-timeline {
+  display: flex; flex-direction: column; gap: 0;
+  position: relative;
+}
+.steps-timeline::before {
+  content: ''; position: absolute; left: 32px; top: 40px; bottom: 40px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--primary), var(--accent), var(--accent2));
+}
+.step {
+  display: flex; gap: 40px; padding: 32px 0;
+  opacity: 0; transform: translateX(-30px);
+  transition: all 0.6s ease-out;
+}
+.step.visible { opacity: 1; transform: translateX(0); }
+.step-number {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.5rem; font-weight: 700; flex-shrink: 0;
+  position: relative; z-index: 1;
+  box-shadow: 0 0 30px rgba(99,102,241,0.3);
+}
+.step-content { padding-top: 12px; }
+.step-content h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.4rem; font-weight: 700; margin-bottom: 8px;
+}
+.step-content p { color: var(--text-muted); line-height: 1.7; max-width: 500px; }
+
+/* ─── FEATURES ─── */
+.features-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+}
+.feature-card {
+  padding: 32px; border-radius: 20px;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  transition: all 0.4s;
+  position: relative; overflow: hidden;
+}
+.feature-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(99,102,241,0.05));
+  opacity: 0; transition: opacity 0.4s;
+}
+.feature-card:hover { transform: translateY(-6px); border-color: rgba(99,102,241,0.3); }
+.feature-card:hover::before { opacity: 1; }
+.feature-icon {
+  width: 56px; height: 56px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; margin-bottom: 20px; position: relative;
+}
+.feature-icon.purple { background: rgba(139,92,246,0.15); }
+.feature-icon.blue { background: rgba(6,182,212,0.15); }
+.feature-icon.green { background: rgba(16,185,129,0.15); }
+.feature-icon.indigo { background: rgba(99,102,241,0.15); }
+.feature-icon.amber { background: rgba(245,158,11,0.15); }
+.feature-icon.rose { background: rgba(244,63,94,0.15); }
+.feature-card h3 {
+  font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; position: relative;
+}
+.feature-card p {
+  font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; position: relative;
+}
+
+/* ─── ROLES ─── */
+.roles-tabs {
+  display: flex; gap: 8px; margin-bottom: 48px;
+  background: var(--glass); border-radius: 16px; padding: 6px;
+  width: fit-content;
+}
+.role-tab {
+  padding: 12px 28px; border-radius: 12px; border: none;
+  background: transparent; color: var(--text-muted);
+  font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  transition: all 0.3s;
+}
+.role-tab.active {
+  background: linear-gradient(135deg, var(--primary), var(--accent2));
+  color: #fff; box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+}
+.role-tab:not(.active):hover { color: var(--text); background: rgba(255,255,255,0.05); }
+
+.role-content { display: none; animation: fadeIn 0.5s ease-out; }
+.role-content.active { display: block; }
+
+.role-demo {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+  align-items: start;
+}
+.role-features { display: flex; flex-direction: column; gap: 16px; }
+.role-feature {
+  display: flex; gap: 16px; padding: 20px;
+  border-radius: 16px; background: var(--glass);
+  border: 1px solid var(--glass-border);
+  transition: all 0.3s;
+}
+.role-feature:hover { border-color: rgba(99,102,241,0.3); transform: translateX(4px); }
+.role-feature-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: rgba(99,102,241,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
+.role-feature h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+.role-feature p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+
+/* ─── MOCK UI ─── */
+.mock-ui {
+  border-radius: 20px; overflow: hidden;
+  background: #111127; border: 1px solid var(--glass-border);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+}
+.mock-titlebar {
+  height: 40px; background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex; align-items: center; padding: 0 16px; gap: 8px;
+}
+.mock-dot { width: 12px; height: 12px; border-radius: 50%; }
+.mock-dot.red { background: #ff5f57; }
+.mock-dot.yellow { background: #febc2e; }
+.mock-dot.green { background: #28c840; }
+.mock-body { padding: 24px; min-height: 340px; }
+
+/* Chat Mock */
+.chat-mock { display: flex; flex-direction: column; gap: 16px; }
+.chat-msg {
+  max-width: 85%; padding: 14px 18px; border-radius: 16px;
+  font-size: 0.88rem; line-height: 1.6;
+  animation: slideIn 0.4s ease-out both;
+}
+.chat-msg.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--primary), var(--accent2));
+  border-bottom-right-radius: 4px;
+}
+.chat-msg.ai {
+  align-self: flex-start;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--glass-border);
+  border-bottom-left-radius: 4px;
+}
+.chat-msg .ai-name {
+  font-weight: 700; font-size: 0.75rem; color: var(--accent);
+  margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px;
+}
+.chat-action {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 8px; margin-top: 8px;
+  background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2);
+  font-size: 0.8rem; color: var(--success); font-weight: 500;
+}
+
+/* Dashboard Mock */
+.dash-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+.dash-stat {
+  padding: 16px; border-radius: 12px;
+  background: var(--glass); border: 1px solid var(--glass-border);
+}
+.dash-stat .val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.8rem; font-weight: 700;
+}
+.dash-stat .val.purple { color: var(--primary-light); }
+.dash-stat .val.cyan { color: var(--accent); }
+.dash-stat .val.green { color: var(--success); }
+.dash-stat .lbl { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+.dash-table { width: 100%; }
+.dash-table-header {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 10px 16px; font-size: 0.75rem; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 1px;
+  border-bottom: 1px solid var(--glass-border);
+}
+.dash-row {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 14px 16px; font-size: 0.85rem;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  transition: background 0.2s;
+}
+.dash-row:hover { background: rgba(255,255,255,0.02); }
+.status-badge {
+  padding: 3px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 600;
+  display: inline-block;
+}
+.status-badge.active { background: rgba(16,185,129,0.15); color: var(--success); }
+.status-badge.review { background: rgba(245,158,11,0.15); color: var(--warning); }
+.status-badge.new { background: rgba(99,102,241,0.15); color: var(--primary-light); }
+
+/* Analytics Mock */
+.analytics-kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+.kpi-card {
+  padding: 16px; border-radius: 12px;
+  background: var(--glass); border: 1px solid var(--glass-border);
+}
+.kpi-val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.4rem; font-weight: 700;
+}
+.kpi-label { font-size: 0.75rem; color: var(--text-muted); }
+.kpi-change { font-size: 0.75rem; color: var(--success); font-weight: 600; }
+
+.pipeline-bar {
+  display: flex; height: 32px; border-radius: 8px; overflow: hidden; margin-top: 16px;
+}
+.pipeline-bar div { transition: width 1s ease-out; }
+.pipeline-segment { display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; }
+
+/* ─── AI SHOWCASE ─── */
+.ai-showcase {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+  align-items: center;
+}
+.ai-features { display: flex; flex-direction: column; gap: 24px; }
+.ai-feature {
+  display: flex; gap: 20px;
+  padding: 24px; border-radius: 16px;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  transition: all 0.3s;
+}
+.ai-feature:hover { border-color: rgba(99,102,241,0.3); transform: translateX(4px); }
+.ai-feature-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; flex-shrink: 0;
+}
+.ai-feature h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
+.ai-feature p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+/* CV Analysis Mock */
+.cv-mock {
+  padding: 24px; border-radius: 20px;
+  background: #111127; border: 1px solid var(--glass-border);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+}
+.cv-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--glass-border);
+}
+.cv-header h4 { font-size: 1rem; font-weight: 700; }
+.cv-score {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.8rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--success), var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.cv-skills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.cv-skill {
+  padding: 6px 14px; border-radius: 50px;
+  font-size: 0.8rem; font-weight: 500;
+}
+.cv-skill.high { background: rgba(16,185,129,0.15); color: var(--success); }
+.cv-skill.mid { background: rgba(6,182,212,0.15); color: var(--accent); }
+.cv-skill.low { background: rgba(245,158,11,0.15); color: var(--warning); }
+.cv-bars { display: flex; flex-direction: column; gap: 10px; }
+.cv-bar-row { display: flex; align-items: center; gap: 12px; }
+.cv-bar-label { width: 100px; font-size: 0.8rem; color: var(--text-muted); }
+.cv-bar-track { flex: 1; height: 8px; border-radius: 4px; background: rgba(255,255,255,0.05); overflow: hidden; }
+.cv-bar-fill { height: 100%; border-radius: 4px; transition: width 1.5s ease-out; }
+.cv-bar-fill.exp { background: linear-gradient(90deg, var(--primary), var(--accent)); }
+.cv-bar-fill.edu { background: linear-gradient(90deg, var(--accent2), var(--primary-light)); }
+.cv-bar-fill.skill { background: linear-gradient(90deg, var(--success), var(--accent)); }
+
+/* ─── ADVANTAGES ─── */
+.advantages-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+}
+.advantage-card {
+  padding: 36px; border-radius: 20px;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  transition: all 0.4s; position: relative;
+}
+.advantage-card:hover { transform: translateY(-4px); border-color: rgba(99,102,241,0.3); }
+.advantage-number {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 3rem; font-weight: 800;
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(6,182,212,0.2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  position: absolute; top: 16px; right: 24px;
+}
+.advantage-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+.advantage-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+.advantage-metric {
+  margin-top: 16px; display: flex; align-items: baseline; gap: 8px;
+}
+.advantage-metric .big {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem; font-weight: 700; color: var(--success);
+}
+.advantage-metric .unit { font-size: 0.85rem; color: var(--text-muted); }
+
+/* ─── TECH STACK ─── */
+.tech-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+}
+.tech-card {
+  padding: 24px; border-radius: 16px; text-align: center;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  transition: all 0.3s;
+}
+.tech-card:hover { transform: translateY(-4px); border-color: rgba(99,102,241,0.3); }
+.tech-card .tech-emoji { font-size: 2rem; margin-bottom: 12px; }
+.tech-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+.tech-card p { font-size: 0.8rem; color: var(--text-muted); }
+
+/* ─── CTA ─── */
+.cta-section {
+  text-align: center; padding: 120px 40px;
+  position: relative;
+}
+.cta-glow {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(99,102,241,0.12), transparent 70%);
+  pointer-events: none;
+}
+.cta-section h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 800;
+  margin-bottom: 20px; position: relative;
+}
+.cta-section p {
+  font-size: 1.15rem; color: var(--text-muted); max-width: 500px;
+  margin: 0 auto 40px; line-height: 1.7; position: relative;
+}
+.cta-buttons { display: flex; gap: 16px; justify-content: center; position: relative; }
+
+/* ─── MODAL ─── */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(3, 6, 23, 0.75);
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal-backdrop.open { display: flex; }
+.modal-card {
+  width: 100%; max-width: 440px;
+  background: #0f1028;
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.45);
+}
+.modal-card h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.5rem; font-weight: 700;
+  margin-bottom: 8px;
+}
+.modal-card p { color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+/* ─── FOOTER ─── */
+footer {
+  padding: 40px; text-align: center;
+  border-top: 1px solid var(--glass-border);
+  color: var(--text-muted); font-size: 0.85rem;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: rotate(45deg) translateY(0); }
+  40% { transform: rotate(45deg) translateY(-8px); }
+  60% { transform: rotate(45deg) translateY(-4px); }
+}
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+@keyframes barGrow {
+  from { width: 0; }
+}
+
+/* Scroll-triggered animations */
+.reveal {
+  opacity: 0; transform: translateY(40px);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1; transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .problem-grid, .role-demo, .ai-showcase { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .advantages-grid { grid-template-columns: 1fr; }
+  .tech-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero-stats { gap: 24px; }
+  nav { padding: 12px 20px; }
+  .nav-links { display: none; }
+}
+@media (max-width: 600px) {
+  .features-grid { grid-template-columns: 1fr; }
+  section { padding: 80px 20px; }
+  .hero { padding: 100px 20px 60px; }
+}
+
+/* ─── TYPING ANIMATION ─── */
+.typing-container {
+  display: inline-block;
+}
+.typing-cursor {
+  display: inline-block;
+  width: 2px; height: 1em;
+  background: var(--accent);
+  margin-left: 2px;
+  animation: blink 0.8s infinite;
+  vertical-align: text-bottom;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+<div class="bg-glow bg-glow-3"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo"><img src="TalenticLogoCropped.svg" alt="Talentic" style="height:60px;"></a>
+  <div class="nav-links">
+    <a href="#problem">Problem</a>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#features">Features</a>
+    <a href="#roles">Roles</a>
+    <a href="#ai">AI Engine</a>
+    <a href="#advantages">Advantages</a>
+  </div>
+  <button class="nav-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Get Started</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span> AI-Powered Recruitment Platform</div>
+  <h1>Hiring Made<br><span class="gradient">Intelligent</span></h1>
+  <p>Talentic connects recruiters, applicants, and companies on one AI-powered platform — automating CV analysis, candidate matching, and the entire hiring pipeline.</p>
+  <div class="hero-buttons">
+    <a href="#how-it-works" class="btn btn-primary">See How It Works <span>&#8595;</span></a>
+    <a href="#features" class="btn btn-ghost">Explore Features</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="number" data-count="85">0%</div>
+      <div class="label">Faster Screening</div>
+    </div>
+    <div class="hero-stat">
+      <div class="number" data-count="3">0</div>
+      <div class="label">User Roles</div>
+    </div>
+    <div class="hero-stat">
+      <div class="number" data-count="20">0+</div>
+      <div class="label">AI-Powered Tools</div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll to explore</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- PROBLEM / SOLUTION -->
+<section id="problem">
+  <div class="reveal">
+    <div class="section-label">The Problem</div>
+    <div class="section-title">Recruiting is Broken</div>
+    <div class="section-subtitle">Manual processes, scattered tools, and overwhelmed recruiters lead to missed talent and slow hiring cycles.</div>
+  </div>
+  <div class="problem-grid">
+    <div class="pain-points">
+      <div class="pain-point reveal reveal-delay-1">
+        <div class="pain-icon">&#9201;</div>
+        <div>
+          <h4>Time-Consuming CV Screening</h4>
+          <p>Recruiters spend 23 hours per hire manually reviewing resumes, missing qualified candidates.</p>
+        </div>
+      </div>
+      <div class="pain-point reveal reveal-delay-2">
+        <div class="pain-icon">&#128200;</div>
+        <div>
+          <h4>No Hiring Visibility</h4>
+          <p>Companies lack real-time insights into pipeline health, recruiter performance, and hiring metrics.</p>
+        </div>
+      </div>
+      <div class="pain-point reveal reveal-delay-3">
+        <div class="pain-icon">&#128683;</div>
+        <div>
+          <h4>Fragmented Tools</h4>
+          <p>Switching between ATS, calendars, emails, and spreadsheets causes drop-off and delays.</p>
+        </div>
+      </div>
+      <div class="pain-point reveal reveal-delay-4">
+        <div class="pain-icon">&#9888;</div>
+        <div>
+          <h4>Unconscious Bias</h4>
+          <p>Manual screening introduces human bias, leading to less diverse and suboptimal hiring decisions.</p>
+        </div>
+      </div>
+    </div>
+    <div class="solution-card reveal">
+      <h3>Enter Talentic</h3>
+      <p>One platform that replaces the chaos with AI-powered intelligence — from posting to hiring.</p>
+      <div class="solution-features">
+        <div class="solution-feature"><div class="check-icon">&#10003;</div> AI screens CVs in seconds, not hours</div>
+        <div class="solution-feature"><div class="check-icon">&#10003;</div> Real-time analytics dashboards</div>
+        <div class="solution-feature"><div class="check-icon">&#10003;</div> All-in-one: ATS + Calendar + Chat + AI</div>
+        <div class="solution-feature"><div class="check-icon">&#10003;</div> Objective, data-driven candidate scoring</div>
+        <div class="solution-feature"><div class="check-icon">&#10003;</div> Works for applicants AND recruiters</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="reveal">
+    <div class="section-label">How It Works</div>
+    <div class="section-title">From Posting to Hiring in 4 Steps</div>
+    <div class="section-subtitle">A streamlined workflow powered by AI at every stage of the recruitment pipeline.</div>
+  </div>
+  <div class="steps-timeline">
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h3>Create & Publish Job Postings</h3>
+        <p>Recruiters create detailed job listings with requirements, salary ranges, and custom application questions. AI assistant Milo can help draft postings with optimal language.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h3>Applicants Discover & Apply</h3>
+        <p>Candidates browse, search, and filter job postings. They apply directly with resumes and answer custom questions — all tracked in real-time.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h3>AI Analyzes & Ranks Candidates</h3>
+        <p>Milo AI instantly analyzes CVs, extracts structured data, scores candidates 0-100 against job requirements, and enables bulk comparison across all applicants.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <h3>Schedule, Interview & Hire</h3>
+        <p>Schedule interviews with calendar integration (Google, Outlook), manage the pipeline through stages, and track every metric from application to hire.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="reveal">
+    <div class="section-label">Features</div>
+    <div class="section-title">Everything You Need to Hire Smarter</div>
+    <div class="section-subtitle">A comprehensive toolkit that replaces fragmented recruiting workflows with one intelligent platform.</div>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon purple">&#129302;</div>
+      <h3>AI Assistant "Milo"</h3>
+      <p>Conversational AI powered by Claude & GPT-4o. Ask questions, execute actions, analyze candidates — all through natural language chat.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon blue">&#128196;</div>
+      <h3>Smart CV Analysis</h3>
+      <p>Upload any resume and get instant structured extraction: skills, experience, education, certifications, and a job-fit score (0-100).</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-3">
+      <div class="feature-icon green">&#128101;</div>
+      <h3>Bulk Candidate Matching</h3>
+      <p>Analyze all applicants against a job description at once. Instantly see who's the best fit with ranked scoring and detailed reasoning.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon indigo">&#128197;</div>
+      <h3>Calendar Integration</h3>
+      <p>Schedule interviews with Google Calendar, Outlook, or email. Automated invites, reminders, and ICS file downloads.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon amber">&#128202;</div>
+      <h3>Advanced Analytics</h3>
+      <p>KPIs, hiring rates, time-to-fill, recruiter performance, pipeline charts, and conversion funnels — all in real-time dashboards.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-3">
+      <div class="feature-icon rose">&#128279;</div>
+      <h3>ATS Integration</h3>
+      <p>Connects with Zoho Recruit, Freshteam, and OpenCATS via API polling and webhooks. Sync applications automatically.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ROLES -->
+<section id="roles">
+  <div class="reveal">
+    <div class="section-label">User Roles</div>
+    <div class="section-title">Built for Every Stakeholder</div>
+    <div class="section-subtitle">Three distinct experiences designed for applicants, recruiters, and team leaders.</div>
+  </div>
+
+  <div class="roles-tabs reveal">
+    <button class="role-tab active" onclick="switchRole('applicant')">Applicant</button>
+    <button class="role-tab" onclick="switchRole('recruiter')">Recruiter</button>
+    <button class="role-tab" onclick="switchRole('admin')">Team Leader</button>
+  </div>
+
+  <!-- APPLICANT -->
+  <div class="role-content active" id="role-applicant">
+    <div class="role-demo">
+      <div class="role-features">
+        <div class="role-feature">
+          <div class="role-feature-icon">&#128270;</div>
+          <div>
+            <h4>Smart Job Search</h4>
+            <p>Filter by location, employment type, salary range. Ask Milo to find jobs matching your skills.</p>
+          </div>
+        </div>
+        <div class="role-feature">
+          <div class="role-feature-icon">&#128203;</div>
+          <div>
+            <h4>One-Click Apply</h4>
+            <p>Apply directly through the platform or via AI chat. Upload your resume and answer custom questions.</p>
+          </div>
+        </div>
+        <div class="role-feature">
+          <div class="role-feature-icon">&#128200;</div>
+          <div>
+            <h4>Application Tracking</h4>
+            <p>See real-time status updates: pending, reviewing, interview, accepted. Never wonder where you stand.</p>
+          </div>
+        </div>
+        <div class="role-feature">
+          <div class="role-feature-icon">&#128197;</div>
+          <div>
+            <h4>Interview Calendar</h4>
+            <p>View scheduled interviews, download ICS files, and get reminders directly on your dashboard.</p>
+          </div>
+        </div>
+      </div>
+      <div class="mock-ui">
+        <div class="mock-titlebar">
+          <span class="mock-dot red"></span>
+          <span class="mock-dot yellow"></span>
+          <span class="mock-dot green"></span>
+        </div>
+        <div class="mock-body">
+          <div class="chat-mock" id="applicant-chat">
+            <div class="chat-msg user" style="animation-delay:0.2s">Find me remote software engineering jobs with $100k+ salary</div>
+            <div class="chat-msg ai" style="animation-delay:0.6s">
+              <div class="ai-name">Milo AI</div>
+              I found <strong>3 matching positions</strong> for you:<br><br>
+              1. <strong>Senior Frontend Engineer</strong> — TechCorp (Remote, $120-150k)<br>
+              2. <strong>Full Stack Developer</strong> — InnovateLab (Remote, $110-135k)<br>
+              3. <strong>Backend Engineer</strong> — DataFlow Inc (Remote, $105-130k)<br><br>
+              Would you like me to apply to any of these?
+              <div class="chat-action">&#9889; search_job_postings executed</div>
+            </div>
+            <div class="chat-msg user" style="animation-delay:1s">Apply to the Senior Frontend Engineer position</div>
+            <div class="chat-msg ai" style="animation-delay:1.4s">
+              <div class="ai-name">Milo AI</div>
+              I'll submit your application to <strong>Senior Frontend Engineer at TechCorp</strong> using your uploaded resume. Confirm?
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECRUITER -->
+  <div class="role-content" id="role-recruiter">
+    <div class="role-demo">
+      <div class="role-features">
+        <div class="role-feature">
+          <div class="role-feature-icon">&#128221;</div>
+          <div>
+            <h4>Job Posting Management</h4>
+            <p>Create, edit, and archive positions. Add custom questions, salary ranges, and deadlines.</p>
+          </div>
+        </div>
+        <div class="role-feature">
+          <div class="role-feature-icon">&#129302;</div>
+          <div>
+            <h4>AI CV Analysis</h4>
+            <p>Upload any resume for instant structured analysis. Get candidate scores, skill breakdowns, and match ratings.</p>
+          </div>
+        </div>
+        <div class="role-feature">
+          <div class="role-feature-icon">&#128101;</div>
+          <div>
+            <h4>Bulk Candidate Ranking</h4>
+            <p>Analyze all candidates at once against job requirements. See who's the best fit instantly.</p>
+          </div>
+        </div>
+        <div class="role-feature">
+          <div class="role-feature-icon">&#128197;</div>
+          <div>
+            <h4>Interview Scheduling</h4>
+            <p>Schedule via AI chat with Google Calendar, Outlook, or email integration. Auto-send invitations.</p>
+          </div>
+        </div>
+      </div>
+      <div class="mock-ui">
+        <div class="mock-titlebar">
+          <span class="mock-dot red"></span>
+          <span class="mock-dot yellow"></span>
+          <span class="mock-dot green"></span>
+        </div>
+        <div class="mock-body">
+          <div class="dash-stats">
+            <div class="dash-stat"><div class="val purple">12</div><div class="lbl">Active Jobs</div></div>
+            <div class="dash-stat"><div class="val cyan">248</div><div class="lbl">Candidates</div></div>
+            <div class="dash-stat"><div class="val green">18</div><div class="lbl">Interviews</div></div>
+          </div>
+          <div class="dash-table">
+            <div class="dash-table-header"><span>Position</span><span>Applicants</span><span>Status</span><span>Match</span></div>
+            <div class="dash-row"><span>Senior Frontend Engineer</span><span>42</span><span><span class="status-badge active">Active</span></span><span>87%</span></div>
+            <div class="dash-row"><span>Product Manager</span><span>31</span><span><span class="status-badge active">Active</span></span><span>72%</span></div>
+            <div class="dash-row"><span>DevOps Engineer</span><span>18</span><span><span class="status-badge review">Review</span></span><span>91%</span></div>
+            <div class="dash-row"><span>UX Designer</span><span>27</span><span><span class="status-badge new">New</span></span><span>—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="role-content" id="role-admin">
+    <div class="role-demo">
+      <div class="role-features">
+        <div class="role-feature">
+          <div class="role-feature-icon">&#128202;</div>
+          <div>
+            <h4>Company-Wide Analytics</h4>
+            <p>See hiring rates, time-to-fill, pipeline breakdowns, and conversion rates across all recruiters.</p>
+          </div>
+        </div>
+        <div class="role-feature">
+          <div class="role-feature-icon">&#128101;</div>
+          <div>
+            <h4>Recruiter Performance</h4>
+            <p>Track each recruiter's postings, applications processed, interviews scheduled, and hires made.</p>
+          </div>
+        </div>
+        <div class="role-feature">
+          <div class="role-feature-icon">&#128100;</div>
+          <div>
+            <h4>Team Management</h4>
+            <p>Create recruiter accounts, adjust credits, manage roles, and suspend users from one dashboard.</p>
+          </div>
+        </div>
+        <div class="role-feature">
+          <div class="role-feature-icon">&#128176;</div>
+          <div>
+            <h4>Credit System</h4>
+            <p>Control platform usage with a credit-based system. Allocate and track credits per team member.</p>
+          </div>
+        </div>
+      </div>
+      <div class="mock-ui">
+        <div class="mock-titlebar">
+          <span class="mock-dot red"></span>
+          <span class="mock-dot yellow"></span>
+          <span class="mock-dot green"></span>
+        </div>
+        <div class="mock-body">
+          <div class="analytics-kpis">
+            <div class="kpi-card"><div class="kpi-val" style="color:var(--primary-light)">24</div><div class="kpi-label">Active Jobs</div><div class="kpi-change">+12% this month</div></div>
+            <div class="kpi-card"><div class="kpi-val" style="color:var(--accent)">847</div><div class="kpi-label">Total Applications</div><div class="kpi-change">+28% this month</div></div>
+            <div class="kpi-card"><div class="kpi-val" style="color:var(--success)">68%</div><div class="kpi-label">Hiring Rate</div><div class="kpi-change">+5% improvement</div></div>
+            <div class="kpi-card"><div class="kpi-val" style="color:var(--warning)">14d</div><div class="kpi-label">Avg Time to Fill</div><div class="kpi-change">-3 days faster</div></div>
+          </div>
+          <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;font-weight:600">HIRING PIPELINE</div>
+          <div style="display:flex;gap:4px;margin-top:4px;">
+            <div style="flex:35;padding:8px 4px;border-radius:6px;background:var(--primary);text-align:center;font-size:0.65rem;font-weight:600;white-space:nowrap;">Pending 35%</div>
+            <div style="flex:25;padding:8px 4px;border-radius:6px;background:var(--accent);text-align:center;font-size:0.65rem;font-weight:600;white-space:nowrap;">Review 25%</div>
+            <div style="flex:20;padding:8px 4px;border-radius:6px;background:var(--warning);text-align:center;font-size:0.65rem;font-weight:600;white-space:nowrap;">Interview 20%</div>
+            <div style="flex:12;padding:8px 4px;border-radius:6px;background:var(--success);text-align:center;font-size:0.65rem;font-weight:600;white-space:nowrap;">Hired 12%</div>
+            <div style="flex:8;padding:8px 4px;border-radius:6px;background:#ef4444;text-align:center;font-size:0.65rem;font-weight:600;white-space:nowrap;">No 8%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI ENGINE -->
+<section id="ai">
+  <div class="reveal">
+    <div class="section-label">AI Engine</div>
+    <div class="section-title">Meet Milo — Your AI Recruiting Assistant</div>
+    <div class="section-subtitle">Powered by a multi-agent AI system, Milo coordinates specialized agents behind the scenes to handle sourcing, screening, matching, and outreach — all through natural language.</div>
+  </div>
+  <div class="ai-showcase">
+    <div class="ai-features">
+      <div class="ai-feature reveal reveal-delay-1">
+        <div class="ai-feature-icon">&#128172;</div>
+        <div>
+          <h4>Natural Language Actions</h4>
+          <p>Say "schedule an interview with John for Tuesday at 2pm" and Milo handles everything — calendar invites, notifications, the lot.</p>
+        </div>
+      </div>
+      <div class="ai-feature reveal reveal-delay-2">
+        <div class="ai-feature-icon">&#128196;</div>
+        <div>
+          <h4>Instant CV Intelligence</h4>
+          <p>Drag-and-drop any resume. Specialized AI agents extract skills, experience, education, and certifications — then score job-fit in seconds.</p>
+        </div>
+      </div>
+      <div class="ai-feature reveal reveal-delay-3">
+        <div class="ai-feature-icon">&#128640;</div>
+        <div>
+          <h4>Multi-Agent Workflow</h4>
+          <p>Behind every action, specialized agents collaborate — one sources, one screens, one matches, one schedules. You just talk to Milo.</p>
+        </div>
+      </div>
+      <div class="ai-feature reveal reveal-delay-4">
+        <div class="ai-feature-icon">&#128274;</div>
+        <div>
+          <h4>Smart Confirmation System</h4>
+          <p>Read-only actions execute instantly. Write actions (apply, schedule, update) require one-click confirmation for safety.</p>
+        </div>
+      </div>
+    </div>
+    <div class="cv-mock reveal">
+      <div class="cv-header">
+        <h4>CV Analysis — Sarah Chen</h4>
+        <div class="cv-score">92/100</div>
+      </div>
+      <div class="cv-skills">
+        <span class="cv-skill high">React (5y)</span>
+        <span class="cv-skill high">TypeScript (4y)</span>
+        <span class="cv-skill high">Node.js (4y)</span>
+        <span class="cv-skill mid">Python (3y)</span>
+        <span class="cv-skill mid">AWS (2y)</span>
+        <span class="cv-skill low">Go (1y)</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:0.85rem;">
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);">
+          <span style="color:var(--text-muted);">Education</span>
+          <span style="font-weight:600;">MIT — B.S. Computer Science</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);">
+          <span style="color:var(--text-muted);">Experience</span>
+          <span style="font-weight:600;">6 years — Senior Engineer</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);">
+          <span style="color:var(--text-muted);">Last Role</span>
+          <span style="font-weight:600;">Meta — Staff Frontend Eng.</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);">
+          <span style="color:var(--text-muted);">Salary Exp.</span>
+          <span style="font-weight:600;">$140k — $170k</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);">
+          <span style="color:var(--text-muted);">Location</span>
+          <span style="font-weight:600;">San Francisco, CA (Remote OK)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADVANTAGES -->
+<section id="advantages">
+  <div class="reveal">
+    <div class="section-label">Why Talentic</div>
+    <div class="section-title">The Competitive Advantage</div>
+    <div class="section-subtitle">Measurable improvements across every dimension of recruiting.</div>
+  </div>
+  <div class="advantages-grid">
+    <div class="advantage-card reveal reveal-delay-1">
+      <div class="advantage-number">01</div>
+      <h3>Dramatically Faster Screening</h3>
+      <p>Multiple AI agents work in parallel — analyzing CVs, matching skills, and ranking candidates simultaneously. What took days now takes minutes.</p>
+      <div class="advantage-metric"><span class="big">85%</span><span class="unit">faster time-to-screen</span></div>
+    </div>
+    <div class="advantage-card reveal reveal-delay-2">
+      <div class="advantage-number">02</div>
+      <h3>Better Hiring Decisions</h3>
+      <p>Each agent specializes — one extracts data, one scores fit, one compares candidates. Together they deliver objective, bias-free evaluations.</p>
+      <div class="advantage-metric"><span class="big">3x</span><span class="unit">more qualified shortlists</span></div>
+    </div>
+    <div class="advantage-card reveal reveal-delay-3">
+      <div class="advantage-number">03</div>
+      <h3>Complete Hiring Visibility</h3>
+      <p>Real-time dashboards show pipeline health, recruiter performance, conversion rates, and time-to-fill — at company level.</p>
+      <div class="advantage-metric"><span class="big">100%</span><span class="unit">pipeline transparency</span></div>
+    </div>
+    <div class="advantage-card reveal reveal-delay-4">
+      <div class="advantage-number">04</div>
+      <h3>One Platform, Every Stakeholder</h3>
+      <p>Applicants, recruiters, and team leaders each get a purpose-built experience. No more switching between 5 different tools.</p>
+      <div class="advantage-metric"><span class="big">1</span><span class="unit">platform replaces 5 tools</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="cta-glow"></div>
+  <div class="reveal">
+    <h2>Choose Your<br>Access Path</h2>
+    <p>Company teams can request access now. Normal user onboarding is temporarily closed and will reopen soon.</p>
+    <div class="cta-buttons">
+      <a href="company-access.html" class="btn btn-primary" style="font-size:1.1rem;padding:18px 40px">Contact for Companies</a>
+      <button class="btn btn-ghost" style="font-size:1.1rem;padding:18px 40px" onclick="openComingSoonModal()">Normal Use</button>
+    </div>
+    <p style="font-size:0.9rem;margin-top:16px;">Company contact requests receive a secure registration link by email.</p>
+  </div>
+</section>
+
+<div id="coming-soon-modal" class="modal-backdrop" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="coming-soon-title">
+    <h3 id="coming-soon-title">Coming Soon</h3>
+    <p>Normal user access is currently blocked. We will open onboarding again very soon.</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" style="padding:12px 20px;" onclick="closeComingSoonModal()">Got it</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <img src="TalenticLogoCropped.svg" alt="Talentic" style="height:60px;margin:0 auto 16px;display:block;">
+  <p>Talentic &copy; 2026 — AI-Powered Recruitment Platform</p>
+</footer>
+
+<script>
+// ─── SCROLL REVEAL ───
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal, .step').forEach(el => observer.observe(el));
+
+// ─── CV BAR ANIMATION ───
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.cv-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.width + '%';
+      });
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.cv-mock').forEach(el => barObserver.observe(el));
+
+// ─── NAV HIDE ON SCROLL DOWN ───
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const st = window.scrollY;
+  document.getElementById('navbar').classList.toggle('hidden', st > lastScroll && st > 100);
+  lastScroll = st;
+});
+
+// ─── COUNTER ANIMATION ───
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.dataset.count);
+      const suffix = el.textContent.replace(/[0-9]/g, '');
+      let current = 0;
+      const increment = Math.ceil(target / 40);
+      const timer = setInterval(() => {
+        current = Math.min(current + increment, target);
+        el.textContent = current + suffix;
+        if (current >= target) clearInterval(timer);
+      }, 30);
+      counterObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.number[data-count]').forEach(el => counterObserver.observe(el));
+
+// ─── ROLE TABS ───
+function switchRole(role) {
+  document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.role-content').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('role-' + role).classList.add('active');
+}
+
+// ─── SMOOTH NAV LINKS ───
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// ─── COMING SOON MODAL ───
+const comingSoonModal = document.getElementById('coming-soon-modal');
+
+function openComingSoonModal() {
+  comingSoonModal.classList.add('open');
+  comingSoonModal.setAttribute('aria-hidden', 'false');
+}
+
+function closeComingSoonModal() {
+  comingSoonModal.classList.remove('open');
+  comingSoonModal.setAttribute('aria-hidden', 'true');
+}
+
+comingSoonModal.addEventListener('click', (event) => {
+  if (event.target === comingSoonModal) {
+    closeComingSoonModal();
+  }
+});
+
+window.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    closeComingSoonModal();
+  }
+});
+</script>
+
+</body>
+</html>

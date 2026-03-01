@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talentic — Company Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary: #6366f1;
+  --accent: #06b6d4;
+  --accent2: #8b5cf6;
+  --bg-dark: #0a0a1a;
+  --glass: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.12);
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --danger: #ef4444;
+  --success: #10b981;
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.bg-grid {
+  position: fixed; inset: 0; z-index: -2;
+  background-image:
+    linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.bg-glow {
+  position: fixed; z-index: -1;
+  width: 560px; height: 560px; border-radius: 50%;
+  filter: blur(120px); opacity: 0.14; pointer-events: none;
+}
+.bg-glow-1 { top: -180px; left: -120px; background: var(--primary); }
+.bg-glow-2 { bottom: -220px; right: -120px; background: var(--accent2); }
+
+.container { max-width: 980px; margin: 0 auto; }
+
+.back-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  text-decoration: none; color: var(--text-muted);
+  font-weight: 500; margin-bottom: 24px;
+}
+.back-link:hover { color: var(--text); }
+
+.card {
+  max-width: 560px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(6,182,212,0.06));
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 36px 30px;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.35);
+}
+
+.badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--accent);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  padding: 7px 14px;
+  margin-bottom: 18px;
+}
+
+h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.9rem, 4vw, 2.7rem);
+  line-height: 1.15;
+  margin-bottom: 10px;
+}
+h1 span {
+  background: linear-gradient(135deg, var(--primary), var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+label {
+  display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600;
+}
+
+.input-wrap { position: relative; }
+
+input[type="email"] {
+  width: 100%;
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  padding: 0 16px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input[type="email"]:focus {
+  border-color: rgba(99,102,241,0.7);
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.2);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 100%;
+  margin-top: 16px;
+  border: none;
+  border-radius: 14px;
+  height: 52px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--accent2));
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 10px 30px rgba(99,102,241,0.35); }
+.btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.notice {
+  margin-top: 14px;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  display: none;
+}
+.notice.show { display: block; }
+.notice.error {
+  color: #fecaca;
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.35);
+}
+.notice.success {
+  color: #bbf7d0;
+  background: rgba(16,185,129,0.12);
+  border: 1px solid rgba(16,185,129,0.35);
+}
+
+.helper {
+  margin-top: 14px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 620px) {
+  body { padding: 16px; }
+  .card { padding: 28px 20px; }
+}
+</style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <div class="container">
+    <a class="back-link" href="index.html">&#8592; Back to landing page</a>
+
+    <main class="card">
+      <div class="badge">Company Access</div>
+      <h1>Request Your <span>Registration Link</span></h1>
+      <p class="subtitle">
+        Enter your company email. We will send a secure registration link so you can create your company admin account.
+      </p>
+
+      <form id="company-access-form">
+        <label for="company-email">Work Email</label>
+        <div class="input-wrap">
+          <input id="company-email" type="email" placeholder="name@company.com" required />
+        </div>
+        <button id="submit-btn" class="btn" type="submit">Send Registration Link</button>
+      </form>
+
+      <div id="error-notice" class="notice error" role="alert"></div>
+      <div id="success-notice" class="notice success" role="status"></div>
+
+      <p class="helper">
+        If your backend runs on a different URL, set `window.TALENTIC_API_BASE_URL` before this script executes.
+      </p>
+    </main>
+  </div>
+
+<script>
+const API_BASE_URL = window.TALENTIC_API_BASE_URL || 'http://localhost:8080';
+
+const form = document.getElementById('company-access-form');
+const emailInput = document.getElementById('company-email');
+const submitBtn = document.getElementById('submit-btn');
+const errorNotice = document.getElementById('error-notice');
+const successNotice = document.getElementById('success-notice');
+
+function showError(message) {
+  errorNotice.textContent = message;
+  errorNotice.classList.add('show');
+  successNotice.classList.remove('show');
+}
+
+function showSuccess(message) {
+  successNotice.textContent = message;
+  successNotice.classList.add('show');
+  errorNotice.classList.remove('show');
+}
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const email = emailInput.value.trim();
+  if (!email) return;
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+  errorNotice.classList.remove('show');
+  successNotice.classList.remove('show');
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/v1/auth/company-access`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(text || 'Failed to send registration link.');
+    }
+
+    const payload = await response.json();
+    showSuccess(payload.message || 'Registration link sent. Please check your inbox.');
+    form.reset();
+  } catch (error) {
+    showError(error instanceof Error ? error.message : 'Failed to send registration link.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send Registration Link';
+  }
+});
+</script>
+</body>
+</html>

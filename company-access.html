@@ -191,13 +191,31 @@ input[type="email"]:focus {
       <div id="success-notice" class="notice success" role="status"></div>
 
       <p class="helper">
-        If your backend runs on a different URL, set `window.TALENTIC_API_BASE_URL` before this script executes.
+        Production defaults to same-origin `/v1/...`. For a different backend URL, set `window.TALENTIC_API_BASE_URL` before this script executes.
       </p>
     </main>
   </div>
 
 <script>
-const API_BASE_URL = window.TALENTIC_API_BASE_URL || 'http://localhost:8080';
+function trimTrailingSlash(value) {
+  return value ? value.replace(/\/+$/, '') : value;
+}
+
+function resolveApiBaseUrl() {
+  const configuredBase = trimTrailingSlash(window.TALENTIC_API_BASE_URL);
+  if (configuredBase) {
+    return configuredBase;
+  }
+
+  const { protocol, hostname, origin } = window.location;
+  if (protocol === 'file:' || hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:8080';
+  }
+
+  return trimTrailingSlash(origin);
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 const form = document.getElementById('company-access-form');
 const emailInput = document.getElementById('company-email');
